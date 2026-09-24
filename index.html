@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Fly and the Spider</title>
+<style>
+  html, body { margin: 0; height: 100%; overflow: hidden; background: #1c2a19; }
+  canvas, .layer { position: fixed; inset: 0; width: 100%; height: 100%; pointer-events: none; }
+  .layer { overflow: hidden; }
+  .fly, .spider { position: absolute; left: 0; top: 0; will-change: transform; }
+  .fly svg, .spider svg { display: block; width: 100%; height: 100%; overflow: visible; }
+
+  #hud {
+    position: fixed; right: 18px; bottom: 18px; z-index: 10; width: 272px; box-sizing: border-box; padding: 13px 15px 11px;
+    border-radius: 14px; border: 1px solid rgba(255,255,255,.14);
+    background: linear-gradient(180deg, rgba(26,34,23,.56), rgba(14,20,12,.68));
+    backdrop-filter: blur(12px) saturate(1.3); -webkit-backdrop-filter: blur(12px) saturate(1.3);
+    box-shadow: 0 12px 34px rgba(0,0,0,.34), inset 0 1px 0 rgba(255,255,255,.08);
+    color: #eef2e6; font: 12.5px/1.45 "Segoe UI", system-ui, sans-serif; user-select: none;
+    transition: opacity .25s;
+  }
+  #hud.hidden { opacity: 0; pointer-events: none; }
+  #hud h1 { margin: 0; font-size: 13.5px; font-weight: 600; letter-spacing: .01em; }
+  #hud .latin { margin: 1px 0 10px; color: #a8b4a0; font-size: 11.5px; font-style: italic; }
+  .stats { display: flex; gap: 16px; margin-bottom: 11px; }
+  .stats div { color: #a8b4a0; font-size: 11px; }
+  .stats b { display: block; color: #f4f6ee; font-size: 21px; font-weight: 600; line-height: 1.1; font-variant-numeric: tabular-nums; }
+  .ctrl { display: flex; gap: 6px; align-items: center; }
+  .speed { display: flex; border-radius: 8px; overflow: hidden; border: 1px solid rgba(255,255,255,.14); }
+  button {
+    font: inherit; color: inherit; background: rgba(255,255,255,.07); border: 1px solid rgba(255,255,255,.14);
+    border-radius: 8px; height: 30px; padding: 0 10px; cursor: pointer; display: inline-flex; align-items: center; gap: 6px;
+  }
+  button:hover { background: rgba(255,255,255,.14); }
+  button:focus-visible { outline: 2px solid #cfe39a; outline-offset: 1px; }
+  .speed button { border: 0; border-radius: 0; padding: 0 9px; font-variant-numeric: tabular-nums; }
+  .speed button + button { border-left: 1px solid rgba(255,255,255,.12); }
+  button[aria-pressed="true"] { background: #d7e6a6; color: #1d2a12; font-weight: 600; }
+  #pause { width: 34px; padding: 0; justify-content: center; }
+  #pause .play, #pause[aria-pressed="true"] .bars { display: none; }
+  #pause[aria-pressed="true"] .play { display: block; }
+  #add { margin-left: auto; }
+  #log { list-style: none; margin: 11px 0 0; padding: 9px 0 0; border-top: 1px solid rgba(255,255,255,.1); min-height: 5.8em; }
+  #log li { padding: 1px 0; }
+  #log li:nth-child(2) { opacity: .68; } #log li:nth-child(3) { opacity: .46; } #log li:nth-child(4) { opacity: .28; }
+  .keys { margin-top: 7px; color: #8f9b88; font-size: 10.5px; line-height: 1.5; }
+</style>
+</head>
+<body>
+<canvas id="scene"></canvas>
+<div id="glass" class="layer"></div>
+<canvas id="web"></canvas>
+<div id="onweb" class="layer"></div>
+<div id="air" class="layer"></div>
+<canvas id="fx"></canvas>
+
+<div id="hud">
+  <h1>The Fly and the Spider</h1>
+  <div class="latin">Araneus diadematus, Musca domestica, Lucilia sericata</div>
+  <div class="stats">
+    <div><b id="caught">0</b>caught</div>
+    <div><b id="escaped">0</b>broke free</div>
+    <div><b id="missed">0</b>got away</div>
+  </div>
+  <div class="ctrl">
+    <button id="pause" aria-pressed="false" title="Pause (space)" aria-label="Pause">
+      <svg class="bars" width="12" height="12" viewBox="0 0 12 12"><rect x="2" y="1.5" width="2.6" height="9" rx=".6" fill="currentColor"/><rect x="7.4" y="1.5" width="2.6" height="9" rx=".6" fill="currentColor"/></svg>
+      <svg class="play" width="12" height="12" viewBox="0 0 12 12"><path d="M3 1.6L10.4 6 3 10.4Z" fill="currentColor"/></svg>
+    </button>
+    <div class="speed" role="group" aria-label="Speed">
+      <button data-speed="1" aria-pressed="true" title="Real time (1)">×1</button>
+      <button data-speed="3" aria-pressed="false" title="Faster (3)">×3</button>
+      <button data-speed="10" aria-pressed="false" title="Fast forward (0)">×10</button>
+    </div>
+    <button id="add" title="Another fly (+)">+ fly</button>
+  </div>
+  <ol id="log"></ol>
+  <div class="keys">click the web: the spider comes to check · click near a fly: scare it off · H: hide this panel</div>
+</div>
+
+<script src="util.js"></script>
+<script src="scene.js"></script>
+<script src="web.js"></script>
+<script src="fly.js"></script>
+<script src="spider.js"></script>
+<script src="life.js"></script>
+<script src="world.js"></script>
+</body>
+</html>
